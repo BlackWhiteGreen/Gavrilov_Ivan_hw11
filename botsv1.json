@@ -3774,5 +3774,140 @@
             "_sourcetype": "WinEventLog:Security",
             "_time": "2016-08-28 16:02:17.000 MDT"
         }
-    }
+    },
+    {
+  "preview": false,
+  "offset": 50001,
+  "result": {
+    "ComputerName": "we3436srv.waynecorpinc.local",
+    "EventCode": "DNS",
+    "EventType": "0",
+    "LogName": "DNS",
+    "Message": "DNS query executed.\n\nQuery Information:\n\tQuery Name:\tgoogle.com\n\tQuery Type:\tA\n\tClient IP:\t192.168.1.25\n\tResponse Code:\tNOERROR",
+    "OpCode": "Info",
+    "RecordNumber": "50001",
+    "SourceName": "Microsoft-Windows-DNS-Client",
+    "TaskCategory": "DNS Query",
+    "Type": "Information",
+    "action": "success",
+    "app": "dns",
+    "body": "DNS query executed for google.com type A from 192.168.1.25",
+    "date_hour": "10",
+    "date_mday": "29",
+    "date_minute": "15",
+    "date_month": "august",
+    "date_second": "01",
+    "date_wday": "monday",
+    "date_year": "2016",
+    "date_zone": "local",
+    "dest": "we3436srv.waynecorpinc.local",
+    "dest_nt_domain": "WAYNECORPINC",
+    "dest_nt_host": "we3436srv.waynecorpinc.local",
+    "dvc": "we3436srv",
+    "dvc_nt_host": "we3436srv",
+    "event_id": "50001",
+    "eventtype": [
+      "dns",
+      "dns_query",
+      "wineventlog",
+      "botsv1"
+    ],
+    "QueryName": "google.com",
+    "QueryType": "A",
+    "ClientIP": "192.168.1.25",
+    "ResponseCode": "NOERROR"
+  }
+},
+{
+  "preview": false,
+  "offset": 50002,
+  "result": {
+    "ComputerName": "wkstn01.waynecorpinc.local",
+    "EventCode": "DNS",
+    "EventType": "0",
+    "LogName": "DNS",
+    "Message": "DNS query executed.\n\nQuery Information:\n\tQuery Name:\tajd92jd9d.com\n\tQuery Type:\tA\n\tClient IP:\t192.168.1.77\n\tResponse Code:\tNOERROR",
+    "OpCode": "Info",
+    "RecordNumber": "50002",
+    "SourceName": "Microsoft-Windows-DNS-Client",
+    "TaskCategory": "DNS Query",
+    "Type": "Information",
+    "action": "success",
+    "app": "dns",
+    "body": "DNS query executed for ajd92jd9d.com type A from 192.168.1.77",
+    "date_hour": "10",
+    "date_mday": "29",
+    "date_minute": "17",
+    "date_month": "august",
+    "date_second": "12",
+    "date_wday": "monday",
+    "date_year": "2016",
+    "date_zone": "local",
+    "dest": "wkstn01.waynecorpinc.local",
+    "dest_nt_domain": "WAYNECORPINC",
+    "dest_nt_host": "wkstn01.waynecorpinc.local",
+    "dvc": "wkstn01",
+    "dvc_nt_host": "wkstn01",
+    "event_id": "50002",
+    "eventtype": [
+      "dns",
+      "dns_query",
+      "suspicious",
+      "botsv1"
+    ],
+    "QueryName": "ajd92jd9d.com",
+    "QueryType": "A",
+    "ClientIP": "192.168.1.77",
+    "ResponseCode": "NOERROR"
+  }
+},
+{
+  "preview": false,
+  "offset": 50003,
+  "result": {
+    "ComputerName": "wkstn02.waynecorpinc.local",
+    "EventCode": "DNS",
+    "EventType": "0",
+    "LogName": "DNS",
+    "Message": "DNS query executed.\n\nQuery Information:\n\tQuery Name:\tc2.maliciousdomain.com\n\tQuery Type:\tA\n\tClient IP:\t192.168.1.88\n\tResponse Code:\tNOERROR",
+    "OpCode": "Info",
+    "RecordNumber": "50003",
+    "SourceName": "Microsoft-Windows-DNS-Client",
+    "TaskCategory": "DNS Query",
+    "Type": "Information",
+    "action": "success",
+    "app": "dns",
+    "body": "DNS beaconing suspected for c2.maliciousdomain.com",
+    "date_hour": "10",
+    "date_mday": "29",
+    "date_minute": "20",
+    "date_month": "august",
+    "date_second": "30",
+    "date_wday": "monday",
+    "date_year": "2016",
+    "date_zone": "local",
+    "dest": "wkstn02.waynecorpinc.local",
+    "dest_nt_domain": "WAYNECORPINC",
+    "dest_nt_host": "wkstn02.waynecorpinc.local",
+    "dvc": "wkstn02",
+    "dvc_nt_host": "wkstn02",
+    "event_id": "50003",
+    "eventtype": [
+      "dns",
+      "dns_beaconing",
+      "suspicious",
+      "botsv1"
+    ],
+    "QueryName": "c2.maliciousdomain.com",
+    "QueryType": "A",
+    "ClientIP": "192.168.1.88",
+    "ResponseCode": "NOERROR"
+  }
+}
+
+
 ]
+
+
+
+

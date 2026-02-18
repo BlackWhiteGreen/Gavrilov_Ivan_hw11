@@ -3,57 +3,67 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Загрузка данных из файла с логами
+# Загрузка данных из JSON-файла
 file_path = 'botsv1.json'
-
 with open(file_path, 'r', encoding='utf-8') as f:
     raw_data = json.load(f)
 
-# Нормализация данных, создаем список словарей извлекая только 'result'
+# Извлечение результатов и создание основного датафрейма
 clean_data = [item['result'] for item in raw_data]
-
-# Создание датафрейма
 df = pd.DataFrame(clean_data)
 
-# Доступные источники логов
-print("Доступные типы источников:", df['sourcetype'].unique())
+# Функция для приведения данных в строковый формат
+def normalize_val(val):
+    if isinstance(val, list):
+        return str(val[0])
+    return str(val)
 
-# Фильтр, только WinEventLog
-windows_logs = df[df['sourcetype'] == 'WinEventLog:Security']
+# Нормализация ключевых колонок для корректной фильтрации
+df['EventCode'] = df['EventCode'].apply(normalize_val)
+df['sourcetype'] = df['sourcetype'].apply(normalize_val)
 
-# Количество событий по кодам (топ10)
-top_events = windows_logs['EventCode'].value_counts().head(10)
+# Анализ логов Windows: поиск запусков PowerShell и изменения прав доступа
+win_suspicious = df[
+    (df['sourcetype'] == 'WinEventLog:Security') &
+    (
+        (df['EventCode'] == '4703') |
+        ((df['EventCode'] == '4688') & df['Process_Command_Line'].str.contains('powershell', case=False, na=False))
+    )
+].copy()
+win_suspicious['Event_Label'] = "Win ID:" + win_suspicious['EventCode']
 
-print("Топ-10 событий Windows:")
-print(top_events)
+# Анализ DNS логов: поиск подозрительных доменов по тегам в eventtype
+def check_dns(row):
+    # Проверка принадлежности к DNS логам и наличие подозрительных тегов
+    is_dns = row.get('LogName') == 'DNS' or 'dns' in str(row.get('sourcetype', '')).lower()
+    if is_dns:
+        etype = row.get('eventtype', [])
+        tags = ['suspicious', 'dns_beaconing']
+        if isinstance(etype, list) and any(tag in etype for tag in tags):
+            return True
+    return False
 
-# Поиск конкретных "подозрительных" событий
-suspicious_processes = windows_logs[
-    (windows_logs['EventCode'] == '4688') &
-    (windows_logs['New_Process_Name'].str.contains('powershell', case=False, na=False))
-]
+dns_suspicious = df[df.apply(check_dns, axis=1)].copy()
+dns_suspicious['Event_Label'] = "DNS:" + dns_suspicious['QueryName'].apply(normalize_val)
 
-print(f"\nНайдено запусков PowerShell: {len(suspicious_processes)}")
+# Объединение всех подозрительных событий в один набор для визуализации
+all_suspicious = pd.concat([win_suspicious, dns_suspicious])
+top_10_events = all_suspicious['Event_Label'].value_counts().head(10)
 
-# Код для DNS (демонстрация реализации, закомментирован т.к. в нашем датафрейме нет таких событий)
-# dns_logs = df[df['sourcetype'] == 'stream:dns']
-
-# Поиск редких доменов
-# rare_queries = dns_logs['query'].value_counts()
-# print(rare_queries[rare_queries == 1]) # Те, к которым обращались 1 раз
-
-# Поиск длинных поддоменов (днс-туннелирование)
-# dns_logs['query_length'] = dns_logs['query'].str.len()
-# suspicious_dns = dns_logs[dns_logs['query_length'] > 50]
-
-# Настройка стиля графического вывода
+# Настройка стиля и создание графика для топ-10 событий
 sns.set_theme(style="whitegrid")
 plt.figure(figsize=(12, 6))
 
-# Построение чарта для Топ-10 EventID
-sns.barplot(x=top_events.index, y=top_events.values, palette="viridis")
+# Построение диаграммы
+plot = sns.barplot(x=top_10_events.values, y=top_10_events.index, palette="flare")
 
-plt.title('Топ-10 событий безопасности Windows (EventID)', fontsize=16)
-plt.xlabel('Код события (EventID)', fontsize=12)
-plt.ylabel('Количество', fontsize=12)
+plt.title('Топ-10 подозрительных событий безопасности (Win и DNS)', fontsize=16)
+plt.xlabel('Количество инцидентов', fontsize=12)
+plt.ylabel('Тип события / Домен', fontsize=12)
+
+# Добавление числовых подписей к столбцам
+for i in plot.containers:
+    plot.bar_label(i, padding=3)
+
+plt.tight_layout()
 plt.show()
